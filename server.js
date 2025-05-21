@@ -1,29 +1,29 @@
 require('dotenv').config(); // Cargar variables del .env
-const express = require('express');
+import express, { json, urlencoded } from 'express';
 const app = express();
-const http = require('http');
-const server = http.createServer(app);
-const logger = require('morgan');
-const cors = require('cors');
-const passport = require('passport');
-const multer = require('multer');
+import { createServer } from 'http';
+const server = createServer(app);
+import logger from 'morgan';
+import cors from 'cors';
+import passport, { initialize, session } from 'passport';
+import multer, { memoryStorage } from 'multer';
 
 // Importar rutas
-const userRoutes = require('./routes/userRoutes');
+import userRoutes from './routes/userRoutes';
 
 const port = process.env.PORT || 3000;
 
 // Middlewares
 app.use(logger('dev'));
-app.use(express.json()); 
-app.use(express.urlencoded({ extended: true }));
+app.use(json()); 
+app.use(urlencoded({ extended: true }));
 app.use(cors());
-app.use(passport.initialize());
-app.use(passport.session());
+app.use(initialize());
+app.use(session());
 require('./config/passport')(passport);
 app.disable('x-powered-by');
 
-const upload = multer({ storage: multer.memoryStorage() });
+const upload = multer({ storage: memoryStorage() });
 
 // Rutas
 userRoutes(app);
