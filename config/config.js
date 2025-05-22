@@ -1,13 +1,16 @@
 const mysql = require('mysql2');
 
-// Cargar variables desde .env si estás en local
+// Cargar variables desde .env si estás en local 
 require('dotenv').config();
 
 const db = mysql.createConnection({
-    host: process.env.DB_HOST,         // 'localhost' o el host de Railway
-    user: process.env.DB_USER,         // 'root' o el user de Railway
-    password: process.env.DB_PASSWORD, // tu password local o el de Railway
-    database: process.env.DB_NAME      // nombre de la base de datos
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  ssl: {
+    rejectUnauthorized: false
+  }
 });
 
 db.connect(function(err){

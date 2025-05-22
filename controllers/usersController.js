@@ -39,7 +39,7 @@ module.exports = {
                     email: myUser.email,
                     address: myUser.address,
                     session_token: `JWT ${token}`,
-                    Roles: JSON.parse(myUser.Roles)
+                    Roles: myUser.Roles // Sin JSON.parse
                 }
 
                 return res.status(201).json({
