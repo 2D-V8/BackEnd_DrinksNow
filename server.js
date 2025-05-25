@@ -1,61 +1,48 @@
+require('dotenv').config(); // Cargar variables del .env
 const express = require('express');
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
 const logger = require('morgan');
 const cors = require('cors');
-const passport = require ('passport');
-const multer = require('multer')
-/*
-Importamos Rutas
-*/
-const userRoutes = require('./routes/userRoutes');
+const passport = require('passport');
+const multer = require('multer');
 
+// Importar rutas
+const userRoutes = require('./routes/userRoutes');
 
 const port = process.env.PORT || 3000;
 
-// función que se ejecuta antes de la petición 
+// Middlewares
 app.use(logger('dev'));
 app.use(express.json()); 
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(passport.initialize());
 app.use(passport.session());
-
 require('./config/passport')(passport);
-
 app.disable('x-powered-by');
 
-// Puerto
-app.set('port', port);
+const upload = multer({ storage: multer.memoryStorage() });
 
-unload = multer({
-  storage: multer.memoryStorage()
-
-});
-/*
-Llamado Rutas
-*/
+// Rutas
 userRoutes(app);
 
-
 // Iniciar servidor
-server.listen(port, '192.168.1.15', () => {
-  console.log(`Aplicación de NodeJs iniciada en el puerto ${port}`);
+server.listen(port, () => {
+  console.log(`Servidor Node.js escuchando en puerto ${port}`);
 });
 
-// Ruta raíz
+// Rutas básicas
 app.get('/', (req, res) => {
   res.send('Ruta Raiz BackEnd');
 });
-
-// Ruta test
 app.get('/test', (req, res) => {
-    res.send('Ruta test');
-  });
+  res.send('Ruta test');
+});
 
 // Manejo de errores
 app.use((err, req, res, next) => {
-  console.log(err);
+  console.error(err);
   res.status(err.status || 500).send(err.stack);
 });
